@@ -11,6 +11,6 @@ services:
       - GITHUB_CLIENT_SECRET=
       - PORT=8080
       - WEB_APP=http://localhost:3000
-    image: tasks
+    image: gateway
     ports:
       - 8080:8080
