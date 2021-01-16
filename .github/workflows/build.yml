@@ -31,7 +31,7 @@ jobs:
       IMAGE: ${{ secrets.DOCKER_USERNAME }}/tasks-gateway
     steps:
       - uses: actions/checkout@v1
-      - name: Login to Heroku Container registry
+      - name: Login to Heroku
         run: heroku container:login
       - name: Pull image from Docker Hub
         run: docker pull $IMAGE

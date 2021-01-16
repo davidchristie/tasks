@@ -7,6 +7,7 @@ services:
       dockerfile: build/package/Dockerfile
     container_name: gateway
     environment:
+      - DOMAIN=http://localhost:8080
       - GITHUB_CLIENT_ID=
       - GITHUB_CLIENT_SECRET=
       - PORT=8080

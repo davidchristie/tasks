@@ -26,9 +26,9 @@ func CallbackHandler(logger *log.Logger, clientID, clientSecret, webApp string) 
 	}
 }
 
-func LoginHandler(logger *log.Logger, port, clientID string) http.HandlerFunc {
+func LoginHandler(logger *log.Logger, clientID, domain string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		redirectURI := fmt.Sprintf("http://localhost:%s/login/github/callback", port)
+		redirectURI := fmt.Sprintf("%s/login/github/callback", domain)
 		url := fmt.Sprintf("https://github.com/login/oauth/authorize?client_id=%s&redirect_uri=%s", clientID, redirectURI)
 		http.Redirect(w, r, url, http.StatusFound)
 	}

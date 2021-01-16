@@ -21,6 +21,7 @@ func getRequiredEnv(key string) string {
 }
 
 func main() {
+	domain := getRequiredEnv("DOMAIN")
 	githubClientID := getRequiredEnv("GITHUB_CLIENT_ID")
 	githubClientSecret := getRequiredEnv("GITHUB_CLIENT_SECRET")
 	port := getRequiredEnv("PORT")
@@ -31,7 +32,7 @@ func main() {
 
 	router.Use(middleware.Logging(logger))
 
-	router.HandleFunc("/login/github", github.LoginHandler(logger, port, githubClientID)).Methods("GET")
+	router.HandleFunc("/login/github", github.LoginHandler(logger, githubClientID, domain)).Methods("GET")
 	router.HandleFunc("/login/github/callback", github.CallbackHandler(logger, githubClientID, githubClientSecret, webApp)).Methods("GET")
 
 	fmt.Println("Listening on port", port)
