@@ -1,33 +1,37 @@
-import { BrowserRouter } from 'react-router-dom'
-import LoginButton from './components/LoginButton'
-import LogoutButton from './components/LogoutButton'
-import UserData from './components/UserData'
+import Topbar from './components/Topbar'
+import useLoggedInUser from './hooks/useLoggedInUser'
 import './App.css';
 import logo from './logo.svg';
 
 function App() {
+  const loggedInUser = useLoggedInUser()
+
+  if (loggedInUser.error) {
+    return <>Error: {loggedInUser.error}</>
+  }
+
+  if (loggedInUser.loading) {
+    return <>Loading</>
+  }
+
   return (
-    <BrowserRouter>
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.tsx</code> and save to reload.
+    <div className="App">
+      <Topbar loggedInUser={loggedInUser.data} />
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          Edit <code>src/App.tsx</code> and save to reload.
           </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          <LoginButton />
-          <UserData />
-          <LogoutButton />
-        </header>
-      </div>
-    </BrowserRouter>
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn React
+        </a>
+      </header>
+    </div>
   );
 }
 

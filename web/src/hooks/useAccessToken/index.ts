@@ -1,8 +1,18 @@
 import { parse } from "query-string";
-import { useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
-export default function useAccessToken() {
+const QUERY_STRING_KEY = "access_token";
+const LOCAL_STORAGE_KEY = "access_token";
+
+export default function useAccessToken(): string | null {
+  const history = useHistory();
   const location = useLocation();
-  const { access_token: accessToken } = parse(location.search);
-  return accessToken;
+  const { [QUERY_STRING_KEY]: accessToken } = parse(location.search);
+
+  if (typeof accessToken === "string") {
+    localStorage.setItem(LOCAL_STORAGE_KEY, accessToken);
+    history.push("/");
+  }
+
+  return localStorage.getItem(LOCAL_STORAGE_KEY);
 }
