@@ -1,4 +1,4 @@
-package middleware
+package logging
 
 import (
 	"log"
@@ -7,7 +7,7 @@ import (
 	"github.com/gorilla/handlers"
 )
 
-func Logging(logger *log.Logger) func(http.Handler) http.Handler {
+func Middleware(logger *log.Logger) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return handlers.LoggingHandler(logger.Writer(), next)
 	}

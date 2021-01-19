@@ -1,0 +1,25 @@
+input CreateTask {
+  text: String!
+}
+
+type Task {
+  createdAt: String!
+  createdBy: User!
+  id: ID!
+  text: String!
+}
+
+type User {
+  avatar: String!
+  id: ID!
+  name: String!
+}
+
+type Query {
+  loggedInUser: User
+  tasks: [Task!]!
+}
+
+type Mutation {
+  createTask(input: CreateTask!): Task!
+}
