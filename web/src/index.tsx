@@ -4,11 +4,17 @@ import { BrowserRouter } from 'react-router-dom'
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { newApolloClient } from './clients/apollo';
+import { ApolloProvider } from '@apollo/client';
+
+const apolloClient = newApolloClient()
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <ApolloProvider client={apolloClient}>
+        <App />
+      </ApolloProvider>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')

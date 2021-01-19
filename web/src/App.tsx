@@ -1,9 +1,12 @@
 import Topbar from './components/Topbar'
 import useLoggedInUser from './hooks/useLoggedInUser'
+import useTokenFromQueryString from './hooks/useTokenFromQueryString';
 import './App.css';
 import logo from './logo.svg';
 
 function App() {
+  useTokenFromQueryString()
+
   const loggedInUser = useLoggedInUser()
 
   if (loggedInUser.error) {

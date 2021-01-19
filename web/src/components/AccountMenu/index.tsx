@@ -32,7 +32,7 @@ export default function AccountMenu({ loggedInUser }: Props) {
         color="inherit"
         onClick={handleOpen}
       >
-        <Avatar alt={loggedInUser.name} src={loggedInUser.avatarUrl} />
+        <Avatar alt={loggedInUser.name} src={loggedInUser.avatar} />
       </IconButton>
       <Menu
         anchorEl={anchorEl}

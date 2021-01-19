@@ -22,7 +22,7 @@ func CallbackHandler(logger *log.Logger, clientID, clientSecret, webApp string) 
 			w.WriteHeader(http.StatusInternalServerError)
 		}
 
-		http.Redirect(w, r, webApp+"?access_token="+token, http.StatusFound)
+		http.Redirect(w, r, webApp+"?token="+token, http.StatusFound)
 	}
 }
 
