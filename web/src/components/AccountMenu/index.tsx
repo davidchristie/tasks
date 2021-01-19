@@ -3,8 +3,8 @@ import Avatar from '@material-ui/core/Avatar'
 import IconButton from '@material-ui/core/IconButton';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
+import { User } from '../../generated/graphql';
 import useLogout from '../../hooks/useLogout';
-import { User } from '../../types';
 
 interface Props {
   loggedInUser: User

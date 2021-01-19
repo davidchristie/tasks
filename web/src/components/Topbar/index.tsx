@@ -6,8 +6,8 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import { User } from '../../generated/graphql';
 import useLogin from '../../hooks/useLogin';
-import { User } from '../../types';
 import AccountMenu from '../AccountMenu'
 
 interface Props {

@@ -31,11 +31,6 @@ func Middleware() func(http.Handler) http.Handler {
 				next.ServeHTTP(w, r)
 				return
 			}
-			// if !strings.HasPrefix(a, tokenPrefix) {
-			// 	fmt.Println("doesn't have token prefix")
-			// 	http.Error(w, "Invalid access token", http.StatusForbidden)
-			// 	return
-			// }
 
 			token := strings.TrimPrefix(a, tokenPrefix)
 
@@ -44,11 +39,6 @@ func Middleware() func(http.Handler) http.Handler {
 				next.ServeHTTP(w, r)
 				return
 			}
-			// if err != nil {
-			// 	fmt.Printf("github error: %s\n", err)
-			// 	http.Error(w, "Invalid access token", http.StatusForbidden)
-			// 	return
-			// }
 
 			ctx := context.WithValue(r.Context(), userCtxKey, user)
 			r = r.WithContext(ctx)
@@ -58,7 +48,7 @@ func Middleware() func(http.Handler) http.Handler {
 	}
 }
 
-// ForContext finds the user from the context. REQUIRES Middleware to have run.
+// ForContext finds the user from the context. Requires Middleware to have run.
 func ForContext(ctx context.Context) *github.User {
 	raw, _ := ctx.Value(userCtxKey).(*github.User)
 	return raw
