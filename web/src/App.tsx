@@ -1,5 +1,5 @@
 import Topbar from './components/Topbar'
-import useLoggedInUser from './hooks/useLoggedInUser'
+import { useLoggedInUserQuery } from './generated/graphql'
 import useTokenFromQueryString from './hooks/useTokenFromQueryString';
 import './App.css';
 import logo from './logo.svg';
@@ -7,7 +7,7 @@ import logo from './logo.svg';
 function App() {
   useTokenFromQueryString()
 
-  const loggedInUser = useLoggedInUser()
+  const loggedInUser = useLoggedInUserQuery()
 
   if (loggedInUser.error) {
     return <>Error: {loggedInUser.error}</>
@@ -19,7 +19,7 @@ function App() {
 
   return (
     <div className="App">
-      <Topbar loggedInUser={loggedInUser.data} />
+      <Topbar loggedInUser={loggedInUser.data?.loggedInUser || null} />
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
