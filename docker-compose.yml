@@ -1,12 +1,25 @@
 version: "3.9"
 
 services:
+  database:
+    environment:
+      - PGDATA=/var/lib/postgresql/data
+      - POSTGRES_DB=gateway
+      - POSTGRES_PASSWORD=gateway
+      - POSTGRES_USER=gateway
+    image: postgres:9.6.20
+    restart: always
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
   gateway:
     build:
       context: .
       dockerfile: build/package/Dockerfile
     container_name: gateway
     environment:
+      - DATABASE_CONNECTION=postgres://gateway:gateway@database:5432/gateway?sslmode=disable
+      - DATABASE_MIGRATIONS=file://app/migrations
       - DOMAIN=http://localhost:8080
       - GITHUB_CLIENT_ID=
       - GITHUB_CLIENT_SECRET=
@@ -15,3 +28,6 @@ services:
     image: gateway
     ports:
       - 8080:8080
+
+volumes:
+  db-data:
