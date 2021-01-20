@@ -8,6 +8,46 @@ import (
 	"github.com/google/uuid"
 )
 
+func (d *database) DeleteTask(id uuid.UUID) error {
+	const query = `
+		DELETE FROM tasks
+		WHERE id = $1
+	`
+
+	res, err := d.db.Exec(query, id)
+	if err != nil {
+		return err
+	}
+
+	count, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if count != 1 {
+		return ErrNotFound
+	}
+
+	return nil
+}
+
+func (d *database) FindTaskByID(id uuid.UUID) (*entity.Task, error) {
+	const query = `
+		SELECT id, text, created_at, created_by_user_id FROM tasks
+		WHERE id = $1
+	`
+
+	row := d.db.QueryRow(query, id)
+	task := entity.Task{}
+	if err := row.Scan(&task.ID, &task.Text, &task.CreatedAt, &task.CreatedByUserID); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, ErrNotFound
+		}
+		return nil, err
+	}
+
+	return &task, nil
+}
+
 func (d *database) FindTasksCreatedByUserID(userID uuid.UUID, limit int) ([]*entity.Task, error) {
 	const query = `
 		SELECT id, text, created_at, created_by_user_id FROM tasks

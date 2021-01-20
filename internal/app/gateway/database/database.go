@@ -3,7 +3,6 @@ package database
 import (
 	"context"
 	"database/sql"
-	"errors"
 
 	"github.com/davidchristie/tasks/internal/app/gateway/entity"
 	_ "github.com/golang-migrate/migrate/v4/source/file" // file driver
@@ -12,6 +11,8 @@ import (
 )
 
 type Database interface {
+	DeleteTask(id uuid.UUID) error
+	FindTaskByID(id uuid.UUID) (*entity.Task, error)
 	FindTasksCreatedByUserID(userID uuid.UUID, limit int) ([]*entity.Task, error)
 	FindUserByGithubID(githubID int) (*entity.User, error)
 	FindUserByID(id uuid.UUID) (*entity.User, error)
@@ -24,8 +25,6 @@ type Database interface {
 type database struct {
 	db *sql.DB
 }
-
-var ErrNotFound = errors.New("not found")
 
 func Connect(url string) (Database, error) {
 	db, err := sql.Open("postgres", url)

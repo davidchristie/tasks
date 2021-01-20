@@ -18,14 +18,14 @@ import (
 )
 
 func (r *mutationResolver) CreateTask(ctx context.Context, input model.CreateTask) (*model.Task, error) {
-	user := auth.ForContext(ctx)
-	if user == nil {
+	loggedInUser := auth.ForContext(ctx)
+	if loggedInUser == nil {
 		return nil, ErrMustBeLoggedIn
 	}
 
 	task := entity.Task{
 		CreatedAt:       time.Now().Format(time.RFC3339),
-		CreatedByUserID: user.ID,
+		CreatedByUserID: loggedInUser.ID,
 		ID:              uuid.New(),
 		Text:            input.Text,
 	}
@@ -43,27 +43,52 @@ func (r *mutationResolver) CreateTask(ctx context.Context, input model.CreateTas
 	return format.Task(&task), nil
 }
 
+func (r *mutationResolver) DeleteTask(ctx context.Context, id string) (*model.Task, error) {
+	loggedInUser := auth.ForContext(ctx)
+	if loggedInUser == nil {
+		return nil, ErrMustBeLoggedIn
+	}
+
+	taskID, err := uuid.Parse(id)
+	if err != nil {
+		return nil, ErrNotFound
+	}
+
+	task, err := r.Database.FindTaskByID(taskID)
+
+	if task.CreatedByUserID != loggedInUser.ID {
+		return nil, ErrNotFound
+	}
+
+	err = r.Database.DeleteTask(task.ID)
+	if err != nil {
+		return nil, errors.New("error deleting task")
+	}
+
+	return format.Task(task), nil
+}
+
 func (r *queryResolver) LoggedInUser(ctx context.Context) (*model.User, error) {
-	user := auth.ForContext(ctx)
-	if user == nil {
+	loggedInUser := auth.ForContext(ctx)
+	if loggedInUser == nil {
 		return nil, nil
 	}
 	return &model.User{
-		Avatar: user.AvatarURL,
-		ID:     user.ID.String(),
-		Name:   user.Name,
+		Avatar: loggedInUser.AvatarURL,
+		ID:     loggedInUser.ID.String(),
+		Name:   loggedInUser.Name,
 	}, nil
 }
 
 func (r *queryResolver) Tasks(ctx context.Context) ([]*model.Task, error) {
 	const limit = 25 // TODO: Add this as an argument.
 
-	user := auth.ForContext(ctx)
-	if user == nil {
+	loggedInUser := auth.ForContext(ctx)
+	if loggedInUser == nil {
 		return nil, ErrMustBeLoggedIn
 	}
 
-	tasks, err := r.Database.FindTasksCreatedByUserID(user.ID, limit)
+	tasks, err := r.Database.FindTasksCreatedByUserID(loggedInUser.ID, limit)
 	if err != nil {
 		return nil, err
 	}
@@ -74,7 +99,7 @@ func (r *queryResolver) Tasks(ctx context.Context) ([]*model.Task, error) {
 func (r *taskResolver) CreatedBy(ctx context.Context, obj *model.Task) (*model.User, error) {
 	user, err := r.Database.FindUserByID(obj.CreatedByUserID)
 	if err != nil {
-		return nil, errors.New("user not found")
+		return nil, ErrNotFound
 	}
 	return &model.User{
 		Avatar: user.AvatarURL,

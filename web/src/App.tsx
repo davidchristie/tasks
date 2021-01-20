@@ -21,14 +21,12 @@ function App() {
   return (
     <div className="App">
       <Topbar loggedInUser={loggedInUser.data?.loggedInUser || null} />
-      <Container>
-        {loggedInUser.data?.loggedInUser!! && (
-          <>
-            <CreateTaskForm />
-            <TaskList />
-          </>
-        )}
-      </Container>
+      {loggedInUser.data?.loggedInUser!! && (
+        <Container>
+          <CreateTaskForm />
+          <TaskList />
+        </Container>
+      )}
     </div>
   );
 }

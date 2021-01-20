@@ -6,9 +6,7 @@ import { TasksDocument, useCreateTaskMutation } from '../../generated/graphql'
 export default function CreateTaskForm() {
   const [createTask, { loading }] = useCreateTaskMutation({
     refetchQueries: [
-      {
-        query: TasksDocument,
-      }
+      { query: TasksDocument },
     ],
   })
   const [text, setText] = useState("")
