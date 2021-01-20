@@ -24,7 +24,7 @@ export default function AccountMenu({ loggedInUser }: Props) {
   };
 
   return (
-    <div>
+    <div className="AccountMenu">
       <IconButton
         aria-controls="account-menu"
         aria-haspopup="true"

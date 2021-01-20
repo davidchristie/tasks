@@ -1,7 +1,9 @@
 #!/bin/bash
 
-# Backend code generation
-(go generate ./...)
+echo "Generating backend code..."
+go generate ./...
 
-# Frontend code generation
-(cd web && npm run generate)
+echo "Generating frontend code..."
+pushd web
+npm run generate
+popd

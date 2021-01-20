@@ -1,4 +1,7 @@
-
 package graphql
 
-type Resolver struct {}
+import "github.com/davidchristie/tasks/internal/app/gateway/database"
+
+type Resolver struct {
+	Database database.Database
+}

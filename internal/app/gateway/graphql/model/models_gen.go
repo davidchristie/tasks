@@ -6,13 +6,6 @@ type CreateTask struct {
 	Text string `json:"text"`
 }
 
-type Task struct {
-	CreatedAt string `json:"createdAt"`
-	CreatedBy *User  `json:"createdBy"`
-	ID        string `json:"id"`
-	Text      string `json:"text"`
-}
-
 type User struct {
 	Avatar string `json:"avatar"`
 	ID     string `json:"id"`

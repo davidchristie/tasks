@@ -5,9 +5,13 @@ import (
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/davidchristie/tasks/internal/app/gateway/database"
+	"github.com/davidchristie/tasks/internal/app/gateway/entity"
+	"github.com/google/uuid"
 )
 
-func CallbackHandler(logger *log.Logger, clientID, clientSecret, webApp string) http.HandlerFunc {
+func CallbackHandler(db database.Database, logger *log.Logger, clientID, clientSecret, webApp string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseForm()
 		if err != nil {
@@ -17,9 +21,39 @@ func CallbackHandler(logger *log.Logger, clientID, clientSecret, webApp string) 
 		code := r.FormValue("code")
 
 		token, err := requestAccessToken(logger, clientID, clientSecret, code)
-
 		if err != nil {
+			logger.Printf("error: %s", err)
 			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		githubUser, err := FetchUser(token)
+		if err != nil {
+			logger.Printf("error: %s", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		dbUserExists, err := db.HasUserWithGithubID(githubUser.ID)
+		if err != nil {
+			logger.Printf("error: %s", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		if !dbUserExists {
+			err = db.InsertUser(r.Context(), &entity.User{
+				AvatarURL: githubUser.AvatarURL,
+				GithubID:  githubUser.ID,
+				Email:     githubUser.Email,
+				ID:        uuid.New(),
+				Name:      githubUser.Name,
+			})
+			if err != nil {
+				logger.Printf("error: %s", err)
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
 		}
 
 		http.Redirect(w, r, webApp+"?token="+token, http.StatusFound)
