@@ -5,23 +5,20 @@ import (
 	"database/sql"
 	"errors"
 
+	"github.com/davidchristie/tasks/internal/app/gateway/entity"
 	_ "github.com/golang-migrate/migrate/v4/source/file" // file driver
 	"github.com/google/uuid"
 	_ "github.com/lib/pq" // postgres driver
 )
 
 type Database interface {
-	FindUserByGithubID(githubID int) (*User, error)
+	FindTasksCreatedByUserID(userID uuid.UUID, limit int) ([]*entity.Task, error)
+	FindUserByGithubID(githubID int) (*entity.User, error)
+	FindUserByID(id uuid.UUID) (*entity.User, error)
 	HasUserWithGithubID(githubID int) (bool, error)
-	InsertUser(ctx context.Context, user *User) error
+	InsertTask(ctx context.Context, task *entity.Task) error
+	InsertUser(ctx context.Context, user *entity.User) error
 	Migrate(url string) error
-}
-
-type User struct {
-	Email    string
-	ID       uuid.UUID
-	Name     string
-	GithubID int
 }
 
 type database struct {
@@ -30,8 +27,8 @@ type database struct {
 
 var ErrNotFound = errors.New("not found")
 
-func Connect(source string) (Database, error) {
-	db, err := sql.Open("postgres", source)
+func Connect(url string) (Database, error) {
+	db, err := sql.Open("postgres", url)
 	if err != nil {
 		return nil, err
 	}

@@ -30,6 +30,6 @@ func (d *database) Migrate(url string) error {
 		return err
 	}
 	m.Up()
-	fmt.Println("Database migration completed")
+	fmt.Println("Database migration complete")
 	return nil
 }

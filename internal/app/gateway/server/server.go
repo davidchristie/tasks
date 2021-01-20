@@ -30,7 +30,7 @@ func getRequiredEnv(key string) string {
 }
 
 func NewServer() (*http.Server, error) {
-	dbConnection := getRequiredEnv("DATABASE_CONNECTION")
+	dbURL := getRequiredEnv("DATABASE_URL")
 	dbMigrations := getRequiredEnv("DATABASE_MIGRATIONS")
 	domain := getRequiredEnv("DOMAIN")
 	githubClientID := getRequiredEnv("GITHUB_CLIENT_ID")
@@ -41,7 +41,7 @@ func NewServer() (*http.Server, error) {
 	logger := log.New(os.Stdout, "", log.LstdFlags)
 	router := mux.NewRouter()
 
-	db, err := database.Connect(dbConnection)
+	db, err := database.Connect(dbURL)
 	if err != nil {
 		return nil, err
 	}
@@ -53,12 +53,16 @@ func NewServer() (*http.Server, error) {
 		handlers.AllowedMethods([]string{"GET", "POST"}),
 	))
 	router.Use(logging.Middleware(logger))
-	router.Use(auth.Middleware())
+	router.Use(auth.Middleware(db))
 
 	router.HandleFunc("/login/github", github.LoginHandler(logger, githubClientID, domain)).Methods("GET")
 	router.HandleFunc("/login/github/callback", github.CallbackHandler(db, logger, githubClientID, githubClientSecret, webApp)).Methods("GET")
 
-	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graphql.Resolver{}}))
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{
+		Resolvers: &graphql.Resolver{
+			Database: db,
+		},
+	}))
 	router.Handle("/", playground.Handler("Tasks", queryEndpoint))
 	router.Handle(queryEndpoint, srv)
 

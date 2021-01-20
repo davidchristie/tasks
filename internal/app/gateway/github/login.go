@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/davidchristie/tasks/internal/app/gateway/database"
+	"github.com/davidchristie/tasks/internal/app/gateway/entity"
 	"github.com/google/uuid"
 )
 
@@ -41,11 +42,12 @@ func CallbackHandler(db database.Database, logger *log.Logger, clientID, clientS
 		}
 
 		if !dbUserExists {
-			err = db.InsertUser(r.Context(), &database.User{
-				GithubID: githubUser.ID,
-				Email:    githubUser.Email,
-				ID:       uuid.New(),
-				Name:     githubUser.Name,
+			err = db.InsertUser(r.Context(), &entity.User{
+				AvatarURL: githubUser.AvatarURL,
+				GithubID:  githubUser.ID,
+				Email:     githubUser.Email,
+				ID:        uuid.New(),
+				Name:      githubUser.Name,
 			})
 			if err != nil {
 				logger.Printf("error: %s", err)

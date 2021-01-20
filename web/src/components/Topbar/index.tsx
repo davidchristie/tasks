@@ -30,7 +30,7 @@ export default function Topbar({ loggedInUser }: Props) {
   const login = useLogin()
 
   return (
-    <AppBar color="default" position="fixed">
+    <AppBar className="Topbar" color="default" position="static">
       <Toolbar>
         <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
           <MenuIcon />

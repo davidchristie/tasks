@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/davidchristie/tasks/internal/app/gateway/database"
+	"github.com/davidchristie/tasks/internal/app/gateway/entity"
 	"github.com/davidchristie/tasks/internal/app/gateway/github"
 )
 
@@ -15,7 +17,7 @@ type contextKey struct {
 }
 
 // Middleware decodes the bearer token and packs the user into context.
-func Middleware() func(http.Handler) http.Handler {
+func Middleware(db database.Database) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			const tokenPrefix = "token "
@@ -34,7 +36,13 @@ func Middleware() func(http.Handler) http.Handler {
 
 			token := strings.TrimPrefix(a, tokenPrefix)
 
-			user, err := github.FetchUser(token)
+			githubUser, err := github.FetchUser(token)
+			if err != nil {
+				next.ServeHTTP(w, r)
+				return
+			}
+
+			user, err := db.FindUserByGithubID(githubUser.ID)
 			if err != nil {
 				next.ServeHTTP(w, r)
 				return
@@ -49,7 +57,7 @@ func Middleware() func(http.Handler) http.Handler {
 }
 
 // ForContext finds the user from the context. Requires Middleware to have run.
-func ForContext(ctx context.Context) *github.User {
-	raw, _ := ctx.Value(userCtxKey).(*github.User)
+func ForContext(ctx context.Context) *entity.User {
+	raw, _ := ctx.Value(userCtxKey).(*entity.User)
 	return raw
 }

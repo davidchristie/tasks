@@ -1,0 +1,12 @@
+mutation CreateTask($input: CreateTask!) {
+  createTask(input: $input) {
+    createdAt
+    createdBy {
+      avatar
+      id
+      name
+    }
+    id
+    text
+  }
+}
