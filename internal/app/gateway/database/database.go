@@ -20,6 +20,7 @@ type Database interface {
 	InsertTask(ctx context.Context, task *entity.Task) error
 	InsertUser(ctx context.Context, user *entity.User) error
 	Migrate(url string) error
+	UpdateTask(task *entity.Task) error
 }
 
 type database struct {

@@ -47,6 +47,7 @@ type ComplexityRoot struct {
 	Mutation struct {
 		CreateTask func(childComplexity int, input model.CreateTask) int
 		DeleteTask func(childComplexity int, id string) int
+		UpdateTask func(childComplexity int, input model.UpdateTask) int
 	}
 
 	Query struct {
@@ -71,6 +72,7 @@ type ComplexityRoot struct {
 type MutationResolver interface {
 	CreateTask(ctx context.Context, input model.CreateTask) (*model.Task, error)
 	DeleteTask(ctx context.Context, id string) (*model.Task, error)
+	UpdateTask(ctx context.Context, input model.UpdateTask) (*model.Task, error)
 }
 type QueryResolver interface {
 	LoggedInUser(ctx context.Context) (*model.User, error)
@@ -118,6 +120,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.DeleteTask(childComplexity, args["id"].(string)), true
+
+	case "Mutation.updateTask":
+		if e.complexity.Mutation.UpdateTask == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateTask_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateTask(childComplexity, args["input"].(model.UpdateTask)), true
 
 	case "Query.loggedInUser":
 		if e.complexity.Query.LoggedInUser == nil {
@@ -250,6 +264,11 @@ var sources = []*ast.Source{
   text: String!
 }
 
+input UpdateTask {
+  id: ID!
+  text: String
+}
+
 type Task {
   createdAt: String!
   createdBy: User!
@@ -271,6 +290,7 @@ type Query {
 type Mutation {
   createTask(input: CreateTask!): Task!
   deleteTask(id: String!): Task!
+  updateTask(input: UpdateTask!): Task!
 }
 `, BuiltIn: false},
 }
@@ -307,6 +327,21 @@ func (ec *executionContext) field_Mutation_deleteTask_args(ctx context.Context, 
 		}
 	}
 	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateTask_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.UpdateTask
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNUpdateTask2githubᚗcomᚋdavidchristieᚋtasksᚋinternalᚋappᚋgatewayᚋgraphqlᚋmodelᚐUpdateTask(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
 	return args, nil
 }
 
@@ -431,6 +466,48 @@ func (ec *executionContext) _Mutation_deleteTask(ctx context.Context, field grap
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().DeleteTask(rctx, args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Task)
+	fc.Result = res
+	return ec.marshalNTask2ᚖgithubᚗcomᚋdavidchristieᚋtasksᚋinternalᚋappᚋgatewayᚋgraphqlᚋmodelᚐTask(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_updateTask(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_updateTask_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateTask(rctx, args["input"].(model.UpdateTask))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1937,6 +2014,34 @@ func (ec *executionContext) unmarshalInputCreateTask(ctx context.Context, obj in
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputUpdateTask(ctx context.Context, obj interface{}) (model.UpdateTask, error) {
+	var it model.UpdateTask
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+			it.ID, err = ec.unmarshalNID2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "text":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("text"))
+			it.Text, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 // endregion **************************** input.gotpl *****************************
 
 // region    ************************** interface.gotpl ***************************
@@ -1967,6 +2072,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			}
 		case "deleteTask":
 			out.Values[i] = ec._Mutation_deleteTask(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "updateTask":
+			out.Values[i] = ec._Mutation_updateTask(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -2468,6 +2578,11 @@ func (ec *executionContext) marshalNTask2ᚖgithubᚗcomᚋdavidchristieᚋtasks
 		return graphql.Null
 	}
 	return ec._Task(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNUpdateTask2githubᚗcomᚋdavidchristieᚋtasksᚋinternalᚋappᚋgatewayᚋgraphqlᚋmodelᚐUpdateTask(ctx context.Context, v interface{}) (model.UpdateTask, error) {
+	res, err := ec.unmarshalInputUpdateTask(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNUser2githubᚗcomᚋdavidchristieᚋtasksᚋinternalᚋappᚋgatewayᚋgraphqlᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v model.User) graphql.Marshaler {

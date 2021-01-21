@@ -52,6 +52,7 @@ func (d *database) FindTasksCreatedByUserID(userID uuid.UUID, limit int) ([]*ent
 	const query = `
 		SELECT id, text, created_at, created_by_user_id FROM tasks
 		WHERE created_by_user_id = $1
+		ORDER BY created_at ASC
 		LIMIT $2
 	`
 
@@ -98,6 +99,29 @@ func (d *database) InsertTask(ctx context.Context, task *entity.Task) error {
 	}
 
 	tx.Commit()
+
+	return nil
+}
+
+func (d *database) UpdateTask(task *entity.Task) error {
+	const query = `
+		UPDATE tasks
+		SET text = $2, created_at = $3, created_by_user_id = $4
+		WHERE id = $1;
+	`
+
+	res, err := d.db.Exec(query, task.ID, task.Text, task.CreatedAt, task.CreatedByUserID)
+	if err != nil {
+		return err
+	}
+
+	count, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if count != 1 {
+		return ErrNotFound
+	}
 
 	return nil
 }

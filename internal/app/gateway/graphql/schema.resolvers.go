@@ -7,6 +7,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/davidchristie/tasks/internal/app/gateway/auth"
@@ -27,11 +28,7 @@ func (r *mutationResolver) CreateTask(ctx context.Context, input model.CreateTas
 		CreatedAt:       time.Now().Format(time.RFC3339),
 		CreatedByUserID: loggedInUser.ID,
 		ID:              uuid.New(),
-		Text:            input.Text,
-	}
-
-	if task.Text == "" {
-		return nil, errors.New("text cannot be empty")
+		Text:            strings.TrimSpace(input.Text),
 	}
 
 	err := r.Database.InsertTask(ctx, &task)
@@ -64,6 +61,31 @@ func (r *mutationResolver) DeleteTask(ctx context.Context, id string) (*model.Ta
 	if err != nil {
 		return nil, errors.New("error deleting task")
 	}
+
+	return format.Task(task), nil
+}
+
+func (r *mutationResolver) UpdateTask(ctx context.Context, input model.UpdateTask) (*model.Task, error) {
+	loggedInUser := auth.ForContext(ctx)
+	if loggedInUser == nil {
+		return nil, ErrMustBeLoggedIn
+	}
+
+	taskID, err := uuid.Parse(input.ID)
+	if err != nil {
+		return nil, ErrNotFound
+	}
+
+	task, err := r.Database.FindTaskByID(taskID)
+	if err != nil {
+		return nil, ErrNotFound
+	}
+
+	if input.Text != nil {
+		task.Text = *input.Text
+	}
+
+	r.Database.UpdateTask(task)
 
 	return format.Task(task), nil
 }

@@ -6,6 +6,11 @@ type CreateTask struct {
 	Text string `json:"text"`
 }
 
+type UpdateTask struct {
+	ID   string  `json:"id"`
+	Text *string `json:"text"`
+}
+
 type User struct {
 	Avatar string `json:"avatar"`
 	ID     string `json:"id"`

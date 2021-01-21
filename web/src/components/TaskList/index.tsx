@@ -1,5 +1,4 @@
-import List from '@material-ui/core/List';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { CircularProgress, List, } from '@material-ui/core';
 import { useTasksQuery } from '../../generated/graphql'
 import TaskListItem from '../TaskListItem'
 
@@ -7,12 +6,12 @@ export default function TaskList() {
   const tasks = useTasksQuery()
 
   return (
-    <div className="TaskList">
+    <div>
       {tasks.loading && (
         <CircularProgress />
       )}
       {tasks.data && (
-        <List dense>
+        <List>
           {tasks.data.tasks.map(task => (
             <TaskListItem key={task.id} task={task} />
           ))}
