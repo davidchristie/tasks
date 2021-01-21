@@ -1,14 +1,14 @@
-import { Avatar, IconButton, MenuItem, Menu } from "@material-ui/core"
-import { useState } from "react"
+import { Avatar, IconButton, MenuItem, Menu } from "@material-ui/core";
+import { useState } from "react";
 import { User } from "../../generated/graphql";
 import useLogout from "../../hooks/useLogout";
 
 interface Props {
-  loggedInUser: User
+  loggedInUser: User;
 }
 
 export default function AccountMenu({ loggedInUser }: Props) {
-  const logout = useLogout()
+  const logout = useLogout();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
