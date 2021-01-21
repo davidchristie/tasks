@@ -3,14 +3,14 @@ import {
   CircularProgress,
   Container,
   CssBaseline,
-  Fab
-} from "@material-ui/core"
-import { makeStyles } from "@material-ui/core/styles"
-import AddIcon from '@material-ui/icons/Add'
-import CreateTaskForm from "./components/CreateTaskForm"
-import TaskList from "./components/TaskList"
-import Topbar from "./components/Topbar"
-import { useLoggedInUserQuery } from "./generated/graphql"
+  Fab,
+} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import AddIcon from "@material-ui/icons/Add";
+import CreateTaskForm from "./components/CreateTaskForm";
+import TaskList from "./components/TaskList";
+import Topbar from "./components/Topbar";
+import { useLoggedInUserQuery } from "./generated/graphql";
 import useTokenFromQueryString from "./hooks/useTokenFromQueryString";
 
 const useStyles = makeStyles((theme) => ({
@@ -19,17 +19,17 @@ const useStyles = makeStyles((theme) => ({
   },
   fab: {
     bottom: theme.spacing(4),
-    position: 'absolute',
+    position: "absolute",
     right: theme.spacing(4),
   },
 }));
 
 function App() {
-  const classes = useStyles()
+  const classes = useStyles();
 
-  useTokenFromQueryString()
+  useTokenFromQueryString();
 
-  const loggedInUser = useLoggedInUserQuery()
+  const loggedInUser = useLoggedInUserQuery();
 
   return (
     <div>
