@@ -1,5 +1,4 @@
 import {
-  Checkbox,
   IconButton,
   ListItem,
   ListItemIcon,
@@ -9,20 +8,20 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Edit as EditIcon } from "@material-ui/icons";
-import {
-  ChangeEventHandler,
-  FocusEventHandler,
-  MouseEventHandler,
-  useRef,
-  useState,
-} from "react";
+import { FocusEventHandler, MouseEventHandler, useRef, useState } from "react";
 import { Task } from "../../generated/graphql";
 import EditTaskDialog from "../EditTaskDialog";
+import TaskDoneCheckbox from "../TaskDoneCheckbox";
 import TaskTextField from "../TaskTextField";
 
 interface Props {
-  task: Pick<Task, "id" | "text">;
+  divider?: boolean;
+  task: Pick<Task, "done" | "id" | "text">;
 }
+
+const stopPropagation: MouseEventHandler = (event) => {
+  event.stopPropagation();
+};
 
 const useStyles = makeStyles((theme) => ({
   primary: {
@@ -33,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function TaskListItem({ task }: Props) {
+export default function TaskListItem({ divider, task }: Props) {
   const classes = useStyles();
 
   const [editTaskDialogOpen, setEditTaskDialogOpen] = useState(false);
@@ -44,12 +43,6 @@ export default function TaskListItem({ task }: Props) {
   const [hovered, setHovered] = useState(false);
 
   const shadow = focused || hovered;
-
-  const handleCheckboxChange: ChangeEventHandler = () => {};
-
-  const handleCheckboxClick: MouseEventHandler = (event) => {
-    event.stopPropagation();
-  };
 
   const handleEditTaskDialogClose = () => {
     setEditTaskDialogOpen(false);
@@ -99,12 +92,13 @@ export default function TaskListItem({ task }: Props) {
         onMouseEnter={handleRootMouseEnter}
         onMouseLeave={handleRootMouseLeave}
       >
-        <ListItem divider>
+        <ListItem divider={divider}>
           <ListItemIcon>
-            <Checkbox
+            <TaskDoneCheckbox
               color="default"
-              onChange={handleCheckboxChange}
-              onClick={handleCheckboxClick}
+              onClick={stopPropagation}
+              onDoubleClick={stopPropagation}
+              task={task}
             />
           </ListItemIcon>
           <ListItemText

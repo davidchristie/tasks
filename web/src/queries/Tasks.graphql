@@ -1,6 +1,7 @@
 query Tasks {
   tasks {
     createdAt
+    done
     id
     text
   }

@@ -1,6 +1,7 @@
 mutation CreateTask($input: CreateTask!) {
   createTask(input: $input) {
     createdAt
+    done
     id
     text
   }

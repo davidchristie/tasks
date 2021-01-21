@@ -14,10 +14,9 @@ export default function useUpdateTaskInCache(): (
       id,
     });
 
-    console.log("data", data);
-
     client.writeFragment({
       data: {
+        done: input.done === undefined ? data.done : input.done,
         text: input.text || data.text,
       },
       fragment: TaskFragmentDoc,

@@ -32,13 +32,13 @@ func (d *database) DeleteTask(id uuid.UUID) error {
 
 func (d *database) FindTaskByID(id uuid.UUID) (*entity.Task, error) {
 	const query = `
-		SELECT id, text, created_at, created_by_user_id FROM tasks
+		SELECT id, text, completed_at, created_at, created_by_user_id FROM tasks
 		WHERE id = $1
 	`
 
 	row := d.db.QueryRow(query, id)
 	task := entity.Task{}
-	if err := row.Scan(&task.ID, &task.Text, &task.CreatedAt, &task.CreatedByUserID); err != nil {
+	if err := row.Scan(&task.ID, &task.Text, &task.CompletedAt, &task.CreatedAt, &task.CreatedByUserID); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, ErrNotFound
 		}
@@ -50,7 +50,7 @@ func (d *database) FindTaskByID(id uuid.UUID) (*entity.Task, error) {
 
 func (d *database) FindTasksCreatedByUserID(userID uuid.UUID, limit int) ([]*entity.Task, error) {
 	const query = `
-		SELECT id, text, created_at, created_by_user_id FROM tasks
+		SELECT id, text, completed_at, created_at, created_by_user_id FROM tasks
 		WHERE created_by_user_id = $1
 		ORDER BY created_at ASC
 		LIMIT $2
@@ -66,7 +66,7 @@ func (d *database) FindTasksCreatedByUserID(userID uuid.UUID, limit int) ([]*ent
 
 	for rows.Next() {
 		task := entity.Task{}
-		err = rows.Scan(&task.ID, &task.Text, &task.CreatedAt, &task.CreatedByUserID)
+		err = rows.Scan(&task.ID, &task.Text, &task.CompletedAt, &task.CreatedAt, &task.CreatedByUserID)
 		if err != nil {
 			return nil, err
 		}
@@ -83,8 +83,8 @@ func (d *database) FindTasksCreatedByUserID(userID uuid.UUID, limit int) ([]*ent
 
 func (d *database) InsertTask(ctx context.Context, task *entity.Task) error {
 	const query = `
-		INSERT INTO tasks (id, text, created_at, created_by_user_id)
-		VALUES ($1, $2, $3, $4);
+		INSERT INTO tasks (id, text, completed_at, created_at, created_by_user_id)
+		VALUES ($1, $2, $3, $4, $5);
 	`
 
 	tx, err := d.db.BeginTx(ctx, &sql.TxOptions{})
@@ -92,7 +92,7 @@ func (d *database) InsertTask(ctx context.Context, task *entity.Task) error {
 		return err
 	}
 
-	_, err = tx.Exec(query, task.ID, task.Text, task.CreatedAt, task.CreatedByUserID)
+	_, err = tx.Exec(query, task.ID, task.Text, task.CompletedAt, task.CreatedAt, task.CreatedByUserID)
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -106,11 +106,11 @@ func (d *database) InsertTask(ctx context.Context, task *entity.Task) error {
 func (d *database) UpdateTask(task *entity.Task) error {
 	const query = `
 		UPDATE tasks
-		SET text = $2, created_at = $3, created_by_user_id = $4
+		SET text = $2, completed_at = $3, created_at = $4, created_by_user_id = $5
 		WHERE id = $1;
 	`
 
-	res, err := d.db.Exec(query, task.ID, task.Text, task.CreatedAt, task.CreatedByUserID)
+	res, err := d.db.Exec(query, task.ID, task.Text, task.CompletedAt, task.CreatedAt, task.CreatedByUserID)
 	if err != nil {
 		return err
 	}

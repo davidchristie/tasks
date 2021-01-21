@@ -15,12 +15,11 @@ export default function TaskTextField({ task, ...otherProps }: Props) {
   const updateTask = useUpdateTask();
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = async (event) => {
-    const { value: newText } = event.target;
-    console.log("change", newText);
-    setText(newText);
+    const { value: nextText } = event.target;
+    setText(nextText);
     await updateTask({
       id: task.id,
-      text: newText,
+      text: nextText,
     });
   };
 
