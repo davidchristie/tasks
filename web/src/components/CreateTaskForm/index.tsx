@@ -1,7 +1,6 @@
-import Button from '@material-ui/core/Button'
-import TextField from '@material-ui/core/TextField'
+import { Button, TextField } from "@material-ui/core"
 import { ChangeEventHandler, FormEventHandler, useState } from "react"
-import { TasksDocument, useCreateTaskMutation } from '../../generated/graphql'
+import { TasksDocument, useCreateTaskMutation } from "../../generated/graphql"
 
 export default function CreateTaskForm() {
   const [createTask, { loading }] = useCreateTaskMutation({
@@ -30,9 +29,9 @@ export default function CreateTaskForm() {
   }
 
   return (
-    <form className="CreateTaskForm" onSubmit={handleFormSubmit}>
+    <form onSubmit={handleFormSubmit}>
       <TextField onChange={handleTextChange} placeholder="New task" value={text} />
-      <Button disabled={loading || text === ""} type="submit">
+      <Button disabled={loading || text.trim() === ""} type="submit">
         {loading ? "Creating" : "Create"}
       </Button>
     </form>

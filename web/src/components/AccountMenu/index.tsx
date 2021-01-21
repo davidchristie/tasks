@@ -1,10 +1,7 @@
-import React from 'react';
-import Avatar from '@material-ui/core/Avatar'
-import IconButton from '@material-ui/core/IconButton';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
-import { User } from '../../generated/graphql';
-import useLogout from '../../hooks/useLogout';
+import { Avatar, IconButton, MenuItem, Menu } from "@material-ui/core"
+import { useState } from "react"
+import { User } from "../../generated/graphql";
+import useLogout from "../../hooks/useLogout";
 
 interface Props {
   loggedInUser: User
@@ -12,7 +9,7 @@ interface Props {
 
 export default function AccountMenu({ loggedInUser }: Props) {
   const logout = useLogout()
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -24,7 +21,7 @@ export default function AccountMenu({ loggedInUser }: Props) {
   };
 
   return (
-    <div className="AccountMenu">
+    <div>
       <IconButton
         aria-controls="account-menu"
         aria-haspopup="true"
@@ -37,16 +34,16 @@ export default function AccountMenu({ loggedInUser }: Props) {
       <Menu
         anchorEl={anchorEl}
         anchorOrigin={{
-          horizontal: 'right',
-          vertical: 'top',
+          horizontal: "right",
+          vertical: "top",
         }}
         id="account-menu"
         keepMounted
         onClose={handleClose}
         open={open}
         transformOrigin={{
-          horizontal: 'right',
-          vertical: 'bottom',
+          horizontal: "right",
+          vertical: "bottom",
         }}
       >
         <MenuItem onClick={logout}>Logout</MenuItem>
