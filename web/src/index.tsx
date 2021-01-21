@@ -1,21 +1,21 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import { ApolloProvider } from '@apollo/client';
+import { StrictMode } from 'react'
+import { render } from 'react-dom';
 import { BrowserRouter } from 'react-router-dom'
+import { newApolloClient } from './clients/apollo';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { newApolloClient } from './clients/apollo';
-import { ApolloProvider } from '@apollo/client';
 
 const apolloClient = newApolloClient()
 
-ReactDOM.render(
-  <React.StrictMode>
+render(
+  <StrictMode>
     <BrowserRouter>
       <ApolloProvider client={apolloClient}>
         <App />
       </ApolloProvider>
     </BrowserRouter>
-  </React.StrictMode>,
+  </StrictMode>,
   document.getElementById('root')
 );
 

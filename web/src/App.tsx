@@ -1,4 +1,10 @@
-import { Backdrop, CircularProgress, Container, Fab } from "@material-ui/core"
+import {
+  Backdrop,
+  CircularProgress,
+  Container,
+  CssBaseline,
+  Fab
+} from "@material-ui/core"
 import { makeStyles } from "@material-ui/core/styles"
 import AddIcon from '@material-ui/icons/Add'
 import CreateTaskForm from "./components/CreateTaskForm"
@@ -25,12 +31,9 @@ function App() {
 
   const loggedInUser = useLoggedInUserQuery()
 
-  if (loggedInUser.error) {
-    return <>Error: {loggedInUser.error}</>
-  }
-
   return (
     <div>
+      <CssBaseline />
       {!loggedInUser.loading && (
         <>
           <Topbar loggedInUser={loggedInUser.data?.loggedInUser || null} />
