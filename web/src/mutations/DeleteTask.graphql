@@ -1,6 +1,7 @@
 mutation DeleteTask($id: String!) {
   deleteTask(id: $id) {
     createdAt
+    done
     id
     text
   }

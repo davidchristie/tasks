@@ -27,6 +27,7 @@ func (r *mutationResolver) CreateTask(ctx context.Context, input model.CreateTas
 	task := entity.Task{
 		CreatedAt:       time.Now().Format(time.RFC3339),
 		CreatedByUserID: loggedInUser.ID,
+		CompletedAt:     "",
 		ID:              uuid.New(),
 		Text:            strings.TrimSpace(input.Text),
 	}
@@ -79,6 +80,14 @@ func (r *mutationResolver) UpdateTask(ctx context.Context, input model.UpdateTas
 	task, err := r.Database.FindTaskByID(taskID)
 	if err != nil {
 		return nil, ErrNotFound
+	}
+
+	if input.Done != nil {
+		if *input.Done {
+			task.CompletedAt = time.Now().Format(time.RFC3339)
+		} else if !*input.Done {
+			task.CompletedAt = ""
+		}
 	}
 
 	if input.Text != nil {

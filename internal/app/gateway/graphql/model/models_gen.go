@@ -7,6 +7,7 @@ type CreateTask struct {
 }
 
 type UpdateTask struct {
+	Done *bool   `json:"done"`
 	ID   string  `json:"id"`
 	Text *string `json:"text"`
 }
