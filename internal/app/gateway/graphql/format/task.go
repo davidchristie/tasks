@@ -12,7 +12,7 @@ func Task(task *entity.Task) *model.Task {
 	return &model.Task{
 		CreatedAt:       task.CreatedAt,
 		CreatedByUserID: task.CreatedByUserID,
-		Done:						 task.CompletedAt != "",
+		Done:						 task.CompletedAt != nil,
 		ID:              task.ID.String(),
 		Text:            task.Text,
 	}
