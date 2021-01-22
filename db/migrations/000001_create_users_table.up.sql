@@ -1,7 +1,7 @@
 CREATE TABLE users (
-  id UUID,
-  name VARCHAR,
-  email VARCHAR,
-  github_id INTEGER UNIQUE,
+  id UUID UNIQUE NOT NULL,
+  name VARCHAR NOT NULL,
+  email VARCHAR NOT NULL,
+  github_id INTEGER UNIQUE NOT NULL,
   PRIMARY KEY(id)
 );
