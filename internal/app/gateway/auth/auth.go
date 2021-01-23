@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/davidchristie/tasks/internal/app/gateway/config"
 	"github.com/davidchristie/tasks/internal/app/gateway/database"
 	"github.com/davidchristie/tasks/internal/app/gateway/entity"
 	"github.com/davidchristie/tasks/internal/app/gateway/github"
@@ -17,7 +18,7 @@ type contextKey struct {
 }
 
 // Middleware decodes the bearer token and packs the user into context.
-func Middleware(db database.Database) func(http.Handler) http.Handler {
+func Middleware(conf *config.Config, db database.Database) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			const tokenPrefix = "token "
@@ -36,7 +37,7 @@ func Middleware(db database.Database) func(http.Handler) http.Handler {
 
 			token := strings.TrimPrefix(a, tokenPrefix)
 
-			githubUser, err := github.FetchUser(token)
+			githubUser, err := github.FetchUser(conf, token)
 			if err != nil {
 				next.ServeHTTP(w, r)
 				return

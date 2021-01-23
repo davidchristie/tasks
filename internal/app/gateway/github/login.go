@@ -6,12 +6,13 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/davidchristie/tasks/internal/app/gateway/config"
 	"github.com/davidchristie/tasks/internal/app/gateway/database"
 	"github.com/davidchristie/tasks/internal/app/gateway/entity"
 	"github.com/google/uuid"
 )
 
-func CallbackHandler(db database.Database, logger *log.Logger, clientID, clientSecret, webApp string) http.HandlerFunc {
+func CallbackHandler(conf *config.Config, db database.Database, logger *log.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseForm()
 		if err != nil {
@@ -20,14 +21,14 @@ func CallbackHandler(db database.Database, logger *log.Logger, clientID, clientS
 		}
 		code := r.FormValue("code")
 
-		token, err := requestAccessToken(logger, clientID, clientSecret, code)
+		token, err := requestAccessToken(conf, logger, code)
 		if err != nil {
 			logger.Printf("error: %s", err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 
-		githubUser, err := FetchUser(token)
+		githubUser, err := FetchUser(conf, token)
 		if err != nil {
 			logger.Printf("error: %s", err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -56,14 +57,15 @@ func CallbackHandler(db database.Database, logger *log.Logger, clientID, clientS
 			}
 		}
 
-		http.Redirect(w, r, webApp+"?token="+token, http.StatusFound)
+		url := fmt.Sprintf("%s?token=%s", conf.WebApp, token)
+		http.Redirect(w, r, url, http.StatusFound)
 	}
 }
 
-func LoginHandler(logger *log.Logger, clientID, domain string) http.HandlerFunc {
+func LoginHandler(conf *config.Config, logger *log.Logger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		redirectURI := fmt.Sprintf("%s/login/github/callback", domain)
-		url := fmt.Sprintf("https://github.com/login/oauth/authorize?client_id=%s&redirect_uri=%s", clientID, redirectURI)
+		redirectURI := fmt.Sprintf("%s/login/github/callback", conf.Domain)
+		url := fmt.Sprintf("%s?client_id=%s&redirect_uri=%s", conf.GithubAuthorizeURL, conf.GithubClientID, redirectURI)
 		http.Redirect(w, r, url, http.StatusFound)
 	}
 }

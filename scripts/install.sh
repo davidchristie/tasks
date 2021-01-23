@@ -2,10 +2,8 @@
 
 set -ev
 
-go generate ./...
-
 pushd web
 
-npm run generate
+npm install --ignore-scripts
 
 popd

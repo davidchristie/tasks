@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"time"
+
+	"github.com/davidchristie/tasks/internal/app/gateway/config"
 )
 
 type User struct {
@@ -15,14 +17,12 @@ type User struct {
 	Name      string `json:"name"`
 }
 
-func FetchUser(token string) (*User, error) {
-	const url = "https://api.github.com/user"
-
+func FetchUser(conf *config.Config, token string) (*User, error) {
 	client := http.Client{
 		Timeout: time.Second * 2,
 	}
 
-	req, err := http.NewRequest(http.MethodGet, url, nil)
+	req, err := http.NewRequest(http.MethodGet, conf.GithubUserURL, nil)
 	if err != nil {
 		return nil, err
 	}

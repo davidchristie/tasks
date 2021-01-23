@@ -1,3 +1,6 @@
+/test/acceptance/node_modules/
+/test/acceptance/cypress/screenshots/
+/test/acceptance/cypress/videos/
 /web/build/
 /web/coverage/
 /web/node_modules/

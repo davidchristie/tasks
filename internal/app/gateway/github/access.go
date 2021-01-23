@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/davidchristie/tasks/internal/app/gateway/config"
 )
 
 type accessResponse struct {
@@ -18,9 +20,10 @@ var ErrCouldNotParseAccessResponse = errors.New("could not parse access response
 
 var httpClient = http.Client{}
 
-func requestAccessToken(logger *log.Logger, clientID, clientSecret, code string) (string, error) {
+func requestAccessToken(conf *config.Config, logger *log.Logger, code string) (string, error) {
 	// Create access token request
-	reqURL := fmt.Sprintf("https://github.com/login/oauth/access_token?client_id=%s&client_secret=%s&code=%s", clientID, clientSecret, code)
+	reqURL := fmt.Sprintf(
+		"%s?client_id=%s&client_secret=%s&code=%s", conf.GithubAccessTokenURL, conf.GithubClientID, conf.GithubClientSecret, code)
 	req, err := http.NewRequest(http.MethodPost, reqURL, nil)
 	if err != nil {
 		logger.Printf("could not create access request: %v\n", err)
