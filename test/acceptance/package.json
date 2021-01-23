@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "cypress": "^6.3.0",
+    "typescript": "^4.1.3"
+  },
+  "name": "acceptance",
+  "private": true,
+  "scripts": {
+    "open": "cypress open",
+    "test": "cypress run"
+  },
+  "version": "0.0.0"
+}

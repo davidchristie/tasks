@@ -3,8 +3,21 @@ name: Build
 on: [push]
 
 jobs:
+  test-acceptance:
+    name: Test (Acceptance)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install dependencies
+        run: ./scripts/install.sh
+      - name: Build web app
+        run: ./scripts/build.sh
+      - name: Run acceptance tests
+        run: ./scripts/test_acceptance.sh
+
   push-image-to-docker-hub:
     name: Push image to Docker Hub
+    needs: test-acceptance
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master'
     env:

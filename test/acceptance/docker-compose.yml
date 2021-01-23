@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+  database:
+    extends:
+      file: ../../configs/docker/services.yml
+      service: database
+
+  gateway:
+    environment:
+      - GITHUB_ACCESS_TOKEN_URL=http://mock:8888/login/oauth/access_token
+      - GITHUB_AUTHORIZE_URL=http://localhost:8888/login/oauth/authorize
+      - GITHUB_CLIENT_ID=GITHUB_CLIENT_ID
+      - GITHUB_CLIENT_SECRET=GITHUB_CLIENT_SECRET
+      - GITHUB_USER_URL=http://mock:8888/user
+    extends:
+      file: ../../configs/docker/services.yml
+      service: gateway
+    ports:
+      - 8080:8080
+
+  mock:
+    command: go run .
+    environment:
+      - PORT=8888
+    image: golang:1.15.6
+    ports:
+      - 8888:8888
+    volumes:
+      - ./mock:/go/src/davidchristie/tasks/test/acceptance/mock
+    working_dir: /go/src/davidchristie/tasks/test/acceptance/mock
+
+  web:
+    command: npm run serve
+    image: node:15.6.0
+    ports:
+      - 3000:3000
+    volumes:
+      - ../../web:/web
+    working_dir: /web
