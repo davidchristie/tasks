@@ -6,6 +6,7 @@ type Config struct {
 	DatabaseMigrations string `required:"true" split_words:"true"`
 	DatabaseURL string `required:"true" split_words:"true"`
 	Domain string `required:"true"`
+	Environment string `default:"production"`
 	GithubAccessTokenURL string `default:"https://github.com/login/oauth/access_token" split_words:"true"`
 	GithubAuthorizeURL string `default:"https://github.com/login/oauth/authorize" split_words:"true"`
 	GithubClientID string `required:"true" split_words:"true"`

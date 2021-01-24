@@ -42,6 +42,7 @@ export default function AddTaskDialog({ onClose, open }: Props) {
   return (
     <Dialog
       aria-labelledby="add-task-dialog"
+      data-test="add-task-dialog"
       fullWidth
       onClose={onClose}
       open={open}
@@ -51,6 +52,7 @@ export default function AddTaskDialog({ onClose, open }: Props) {
         <DialogContent>
           <TextField
             autoFocus
+            data-test="add-task-dialog-text"
             fullWidth
             label="Text"
             onChange={handleTextChange}
@@ -58,10 +60,10 @@ export default function AddTaskDialog({ onClose, open }: Props) {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={onClose} color="default">
+          <Button onClick={onClose} color="default" data-test="add-task-dialog-cancel">
             Cancel
           </Button>
-          <Button color="default" type="submit">
+          <Button color="default" data-test="add-task-dialog-save" type="submit">
             Save
           </Button>
         </DialogActions>

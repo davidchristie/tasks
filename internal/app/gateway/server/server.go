@@ -16,6 +16,7 @@ import (
 	"github.com/davidchristie/tasks/internal/app/gateway/graphql"
 	"github.com/davidchristie/tasks/internal/app/gateway/graphql/generated"
 	"github.com/davidchristie/tasks/internal/app/gateway/logging"
+	"github.com/davidchristie/tasks/internal/app/gateway/test/seed"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
@@ -52,6 +53,11 @@ func NewServer() (*http.Server, error) {
 	}))
 	router.Handle("/", playground.Handler("Tasks", queryEndpoint))
 	router.Handle(queryEndpoint, srv)
+
+	if conf.Environment == "test" {
+		seedRouter := router.PathPrefix("/test/seed").Subrouter()
+		seed.Populate(seedRouter, db)
+	}
 
 	fmt.Printf("Port: %v\n", conf.Port)
 	return &http.Server{

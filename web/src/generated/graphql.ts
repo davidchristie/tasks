@@ -69,7 +69,7 @@ export type MutationUpdateTaskArgs = {
 
 export type TaskFragment = (
   { __typename?: 'Task' }
-  & Pick<Task, 'done' | 'id' | 'text'>
+  & Pick<Task, 'createdAt' | 'done' | 'id' | 'text'>
 );
 
 export type CreateTaskMutationVariables = Exact<{
@@ -81,7 +81,7 @@ export type CreateTaskMutation = (
   { __typename?: 'Mutation' }
   & { createTask: (
     { __typename?: 'Task' }
-    & Pick<Task, 'createdAt' | 'done' | 'id' | 'text'>
+    & TaskFragment
   ) }
 );
 
@@ -94,7 +94,7 @@ export type DeleteTaskMutation = (
   { __typename?: 'Mutation' }
   & { deleteTask: (
     { __typename?: 'Task' }
-    & Pick<Task, 'createdAt' | 'done' | 'id' | 'text'>
+    & TaskFragment
   ) }
 );
 
@@ -107,7 +107,7 @@ export type UpdateTaskMutation = (
   { __typename?: 'Mutation' }
   & { updateTask: (
     { __typename?: 'Task' }
-    & Pick<Task, 'createdAt' | 'done' | 'id' | 'text'>
+    & TaskFragment
   ) }
 );
 
@@ -129,12 +129,13 @@ export type TasksQuery = (
   { __typename?: 'Query' }
   & { tasks: Array<(
     { __typename?: 'Task' }
-    & Pick<Task, 'createdAt' | 'done' | 'id' | 'text'>
+    & TaskFragment
   )> }
 );
 
 export const TaskFragmentDoc = gql`
     fragment Task on Task {
+  createdAt
   done
   id
   text
@@ -143,13 +144,10 @@ export const TaskFragmentDoc = gql`
 export const CreateTaskDocument = gql`
     mutation CreateTask($input: CreateTask!) {
   createTask(input: $input) {
-    createdAt
-    done
-    id
-    text
+    ...Task
   }
 }
-    `;
+    ${TaskFragmentDoc}`;
 export type CreateTaskMutationFn = Apollo.MutationFunction<CreateTaskMutation, CreateTaskMutationVariables>;
 
 /**
@@ -178,13 +176,10 @@ export type CreateTaskMutationOptions = Apollo.BaseMutationOptions<CreateTaskMut
 export const DeleteTaskDocument = gql`
     mutation DeleteTask($id: String!) {
   deleteTask(id: $id) {
-    createdAt
-    done
-    id
-    text
+    ...Task
   }
 }
-    `;
+    ${TaskFragmentDoc}`;
 export type DeleteTaskMutationFn = Apollo.MutationFunction<DeleteTaskMutation, DeleteTaskMutationVariables>;
 
 /**
@@ -213,13 +208,10 @@ export type DeleteTaskMutationOptions = Apollo.BaseMutationOptions<DeleteTaskMut
 export const UpdateTaskDocument = gql`
     mutation UpdateTask($input: UpdateTask!) {
   updateTask(input: $input) {
-    createdAt
-    done
-    id
-    text
+    ...Task
   }
 }
-    `;
+    ${TaskFragmentDoc}`;
 export type UpdateTaskMutationFn = Apollo.MutationFunction<UpdateTaskMutation, UpdateTaskMutationVariables>;
 
 /**
@@ -282,13 +274,10 @@ export type LoggedInUserQueryResult = Apollo.QueryResult<LoggedInUserQuery, Logg
 export const TasksDocument = gql`
     query Tasks {
   tasks {
-    createdAt
-    done
-    id
-    text
+    ...Task
   }
 }
-    `;
+    ${TaskFragmentDoc}`;
 
 /**
  * __useTasksQuery__

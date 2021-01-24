@@ -40,6 +40,7 @@ export default function EditTaskDialog({
       <IconButton
         aria-label="delete"
         className={classes.deleteButton}
+        data-test="edit-task-dialog-delete"
         onClick={handleDeleteButtonClick}
       >
         <DeleteIcon />

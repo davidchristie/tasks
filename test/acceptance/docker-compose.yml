@@ -8,6 +8,7 @@ services:
 
   gateway:
     environment:
+      - ENVIRONMENT=test
       - GITHUB_ACCESS_TOKEN_URL=http://mock:8888/login/oauth/access_token
       - GITHUB_AUTHORIZE_URL=http://localhost:8888/login/oauth/authorize
       - GITHUB_CLIENT_ID=GITHUB_CLIENT_ID

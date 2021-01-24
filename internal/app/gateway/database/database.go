@@ -11,6 +11,8 @@ import (
 )
 
 type Database interface {
+	DeleteAllTasks() error
+	DeleteAllUsers() error
 	DeleteTask(id uuid.UUID) error
 	FindTaskByID(id uuid.UUID) (*entity.Task, error)
 	FindTasksCreatedByUserID(userID uuid.UUID, limit int) ([]*entity.Task, error)

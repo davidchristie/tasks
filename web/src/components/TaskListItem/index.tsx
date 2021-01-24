@@ -84,6 +84,7 @@ export default function TaskListItem({ divider, task }: Props) {
     <>
       <Paper
         className={classes.root}
+        data-test="task-list-item"
         elevation={shadow ? 3 : 0}
         onBlur={handleRootBlur}
         onClick={handleRootClick}
@@ -105,6 +106,7 @@ export default function TaskListItem({ divider, task }: Props) {
             primary={
               <div className={classes.primary}>
                 <TaskTextField
+                  data-test="task-list-item-text"
                   fullWidth
                   InputProps={{
                     disableUnderline: true,
@@ -115,7 +117,10 @@ export default function TaskListItem({ divider, task }: Props) {
               </div>
             }
           />
-          <ListItemSecondaryAction onClick={handleSecondaryActionClick}>
+          <ListItemSecondaryAction
+            data-test="task-list-item-edit"
+            onClick={handleSecondaryActionClick}
+          >
             <IconButton aria-label="edit">
               <EditIcon />
             </IconButton>

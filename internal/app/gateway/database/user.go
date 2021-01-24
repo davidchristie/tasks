@@ -6,7 +6,21 @@ import (
 
 	"github.com/davidchristie/tasks/internal/app/gateway/entity"
 	"github.com/google/uuid"
+	"github.com/pkg/errors"
 )
+
+func (d *database) DeleteAllUsers() error {
+	const query = `
+		TRUNCATE users CASCADE
+	`
+
+	_, err := d.db.Exec(query)
+	if err != nil {
+		return errors.Wrap(err, "delete all users failed")
+	}
+
+	return nil
+}
 
 func (d *database) InsertUser(ctx context.Context, user *entity.User) error {
 	const query = `
