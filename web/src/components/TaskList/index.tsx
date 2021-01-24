@@ -8,14 +8,16 @@ export default function TaskList() {
   const completeTasks = (tasks.data?.tasks || []).filter((task) => task.done);
 
   return (
-    <div>
+    <div data-test="task-list">
       <TaskListAccordion
+        data-test="task-list-current"
         defaultExpanded
         label="Current"
         loading={tasks.loading}
         tasks={currentTasks}
       />
       <TaskListAccordion
+        data-test="task-list-completed"
         label="Completed"
         loading={tasks.loading}
         tasks={completeTasks}

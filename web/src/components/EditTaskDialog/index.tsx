@@ -18,6 +18,7 @@ export default function EditTaskDialog({ onClose, open, task }: Props) {
   return (
     <Dialog
       aria-labelledby="edit-task-dialog"
+      data-test="edit-task-dialog"
       fullWidth
       onClose={onClose}
       open={open}
@@ -28,6 +29,7 @@ export default function EditTaskDialog({ onClose, open, task }: Props) {
       <DialogContent>
         <TaskTextField
           autoFocus
+          data-test="edit-task-dialog-text"
           fullWidth
           id="text"
           label="Text"
@@ -36,7 +38,7 @@ export default function EditTaskDialog({ onClose, open, task }: Props) {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="default">
+        <Button color="default" data-test="edit-task-dialog-close" onClick={onClose}>
           Close
         </Button>
       </DialogActions>

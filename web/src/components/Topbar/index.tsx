@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       flexGrow: 1,
     },
-  })
+  }),
 );
 
 export default function Topbar({ loggedInUser }: Props) {
@@ -24,14 +24,14 @@ export default function Topbar({ loggedInUser }: Props) {
   const login = useLogin();
 
   return (
-    <AppBar color="default" position="static">
+    <AppBar color="default" data-test="topbar" position="static">
       <Toolbar>
         <Typography variant="h6" className={classes.title}>
           Tasks
         </Typography>
         {loggedInUser && <AccountMenu loggedInUser={loggedInUser} />}
         {!loggedInUser && (
-          <Button color="inherit" onClick={login}>
+          <Button color="inherit" data-test="topbar-login" onClick={login}>
             Login
           </Button>
         )}

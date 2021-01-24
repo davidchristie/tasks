@@ -1,4 +1,5 @@
 fragment Task on Task {
+  createdAt
   done
   id
   text

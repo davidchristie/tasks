@@ -1,23 +1,29 @@
-/// <reference types="cypress" />
+/// <reference path="../support/index.d.ts" />
 
-const ACCOUNT_MENU_SELECTOR = '[aria-controls="account-menu"]';
-const LOGIN_BUTTON_TEXT = "Login";
-const LOGOUT_BUTTON_TEXT = "Logout";
+describe("Login", () => {
+  const ACCOUNT_MENU = "account-menu";
+  const LOGIN_BUTTON = "topbar-login";
+  const LOGOUT_BUTTON = "account-menu-logout";
 
-describe("Logging in with GitHub OAuth", () => {
-  it("can log in and log out", () => {
+  it("should login when the 'Login' button is clicked", () => {
     cy.visit("/");
 
-    cy.contains(LOGIN_BUTTON_TEXT).click();
+    cy.getDataTest(LOGIN_BUTTON).click();
 
-    cy.get(LOGIN_BUTTON_TEXT).should("not.exist");
+    cy.getDataTest(LOGIN_BUTTON).should("not.exist");
 
-    cy.get(ACCOUNT_MENU_SELECTOR).click();
+    cy.getDataTest(ACCOUNT_MENU).should("exist");
+  });
 
-    cy.contains(LOGOUT_BUTTON_TEXT).click();
+  it("should logout when the 'Logout' button is clicked", () => {
+    cy.login();
 
-    cy.contains(LOGIN_BUTTON_TEXT).should("exist");
+    cy.getDataTest(ACCOUNT_MENU).click();
 
-    cy.get(ACCOUNT_MENU_SELECTOR).should("not.exist");
+    cy.getDataTest(LOGOUT_BUTTON).click();
+
+    cy.getDataTest(LOGIN_BUTTON).should("exist");
+
+    cy.getDataTest(ACCOUNT_MENU).should("not.exist");
   });
 });

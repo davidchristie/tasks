@@ -23,3 +23,16 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+Cypress.Commands.add("getDataTest", (value) => {
+  return cy.get(`[data-test="${value}"]`);
+});
+
+Cypress.Commands.add("login", () => {
+  const token = "ACCESS_TOKEN";
+  cy.visit("/", {
+    onBeforeLoad: function (window) {
+      window.localStorage.setItem("token", token);
+    },
+  });
+});

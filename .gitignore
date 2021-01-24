@@ -1,6 +1,7 @@
 /test/acceptance/node_modules/
 /test/acceptance/cypress/screenshots/
 /test/acceptance/cypress/videos/
+/test/acceptance/debug.log
 /web/build/
 /web/coverage/
 /web/node_modules/

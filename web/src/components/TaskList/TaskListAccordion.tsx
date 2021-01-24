@@ -1,6 +1,7 @@
 import {
   Accordion,
   AccordionDetails,
+  AccordionProps,
   AccordionSummary,
   List,
   Typography,
@@ -11,7 +12,7 @@ import { useEffect, useState } from "react";
 import { Task } from "../../generated/graphql";
 import TaskListItem from "../TaskListItem";
 
-interface Props {
+interface Props extends Omit<AccordionProps, "children"> {
   defaultExpanded?: boolean;
   label: string;
   loading: boolean;
@@ -29,6 +30,7 @@ export default function TaskListAccordion({
   label,
   loading,
   tasks,
+  ...otherProps
 }: Props) {
   const classes = useStyles();
 
@@ -42,10 +44,7 @@ export default function TaskListAccordion({
     }
   }, [loading, tasks.length]);
 
-  const handleChange = (
-    event: React.ChangeEvent<{}>,
-    nextExpanded: boolean
-  ) => {
+  const handleChange = (_: React.ChangeEvent<{}>, nextExpanded: boolean) => {
     setExpanded(nextExpanded);
   };
 
@@ -54,6 +53,7 @@ export default function TaskListAccordion({
       disabled={disabled}
       expanded={expanded && tasks.length > 0}
       onChange={handleChange}
+      {...otherProps}
     >
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <Typography>

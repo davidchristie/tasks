@@ -6,7 +6,21 @@ import (
 
 	"github.com/davidchristie/tasks/internal/app/gateway/entity"
 	"github.com/google/uuid"
+	"github.com/pkg/errors"
 )
+
+func (d *database) DeleteAllTasks() error {
+	const query = `
+		TRUNCATE tasks CASCADE
+	`
+
+	_, err := d.db.Exec(query)
+	if err != nil {
+		return errors.Wrap(err, "delete all tasks failed")
+	}
+
+	return nil
+}
 
 func (d *database) DeleteTask(id uuid.UUID) error {
 	const query = `

@@ -23,5 +23,12 @@ export default function TaskDoneCheckbox({ task, ...otherProps }: Props) {
     });
   };
 
-  return <Checkbox {...otherProps} checked={done} onChange={handleChange} />;
+  return (
+    <Checkbox
+      {...otherProps}
+      checked={done}
+      data-test="task-done-checkbox"
+      onChange={handleChange}
+    />
+  );
 }

@@ -7,6 +7,8 @@ interface Props {
   loggedInUser: User;
 }
 
+const ACCOUNT_MENU_ID = "account-menu";
+
 export default function AccountMenu({ loggedInUser }: Props) {
   const logout = useLogout();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -20,13 +22,19 @@ export default function AccountMenu({ loggedInUser }: Props) {
     setAnchorEl(null);
   };
 
+  const handleLogoutClick = () => {
+    logout();
+    handleClose();
+  };
+
   return (
     <div>
       <IconButton
-        aria-controls="account-menu"
+        aria-controls={ACCOUNT_MENU_ID}
         aria-haspopup="true"
-        aria-label="account of logged in user"
+        aria-label="account menu"
         color="inherit"
+        data-test="account-menu"
         onClick={handleOpen}
       >
         <Avatar alt={loggedInUser.name} src={loggedInUser.avatar} />
@@ -37,7 +45,7 @@ export default function AccountMenu({ loggedInUser }: Props) {
           horizontal: "right",
           vertical: "top",
         }}
-        id="account-menu"
+        id={ACCOUNT_MENU_ID}
         keepMounted
         onClose={handleClose}
         open={open}
@@ -46,7 +54,12 @@ export default function AccountMenu({ loggedInUser }: Props) {
           vertical: "bottom",
         }}
       >
-        <MenuItem onClick={logout}>Logout</MenuItem>
+        <MenuItem
+          data-test="account-menu-logout"
+          onClick={handleLogoutClick}
+        >
+          Logout
+        </MenuItem>
       </Menu>
     </div>
   );

@@ -47,6 +47,10 @@
       "react-app/jest"
     ],
     "rules": {
+      "comma-dangle": [
+        "error",
+        "always-multiline"
+      ],
       "quotes": [
         "error",
         "double",
@@ -63,7 +67,7 @@
   "proxy": "http://localhost:8080",
   "scripts": {
     "build": "react-scripts build",
-    "format": "prettier --write .",
+    "format": "eslint . --fix",
     "generate": "graphql-codegen --config codegen.yml",
     "serve": "serve --listen 3000 build",
     "start": "react-scripts start",

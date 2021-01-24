@@ -37,6 +37,8 @@ export default function App() {
 
   const loggedInUser = useLoggedInUserQuery();
 
+  console.log("loggedInUser", loggedInUser);
+
   const handleAddTaskButtonClick = () => {
     setAddTaskDialogOpen(true);
   };
@@ -55,9 +57,10 @@ export default function App() {
             <Container className={classes.container} maxWidth="sm">
               <TaskList />
               <Fab
-                aria-label="add"
+                aria-label="add task"
                 className={classes.fab}
                 color="default"
+                data-test="add-task-button"
                 onClick={handleAddTaskButtonClick}
               >
                 <AddIcon />
